@@ -22,4 +22,7 @@ movement = Vector2( 350, 0 )
 
 [node name="player" parent="." instance=ExtResource( 3 )]
 position = Vector2( 110, 70 )
+ground_speed = 350.0
+jump_height = 150.0
+jump_distance = 200.0
 

@@ -105,19 +105,26 @@ func _handle_collisions(delta: float) -> void:
             # Walk up slopes
             else:
                 var y_off = -(colX.normal.x / colX.normal.y) * colX.remainder.x
-                move_and_collide(Vector2(0, y_off))
-                move_and_collide(colX.remainder)
+                colY = move_and_collide(Vector2(0, y_off))
+                colX = move_and_collide(colX.remainder)
+                
+                # Check for popping above slope
+                if not test_move(transform, Vector2(0, 0.1)):
+                    _check_stick(-y_off)
         # Check if walked off ledge/down slope
         elif on_ground and colY and colY.remainder.y > 0:
             colY = move_and_collide(colY.remainder)
 
+            # Stick moving down slopes                
             if not colY:
                 var slope_desc = abs(velocity.x) * delta / min_slope_y_normal
-                var should_stick = test_move(transform, Vector2(0, slope_desc))
+                _check_stick(slope_desc)
+                
 
-                # Stick moving down slopes
-                if should_stick:
-                    move_and_collide(Vector2(0, abs(slope_desc)))
-                else:
-                    on_ground = false
+func _check_stick(stick: float) -> void:
+    var should_stick = test_move(transform, Vector2(0, stick))
 
+    if should_stick:
+        colY = move_and_collide(Vector2(0, stick))
+    else:
+        on_ground = false

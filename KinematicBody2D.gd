@@ -56,21 +56,12 @@ func get_input() -> void:
 
 func _physics_process(delta: float) -> void:
     get_input()
-    
+
     # Move
     _movement(delta)
-    
+
 
 func _movement(delta: float) -> void:
-    _calc_velocity(delta)
-    
-    colY = move_and_collide(Vector2(0, velocity.y) * delta)
-    colX = move_and_collide(Vector2(velocity.x, 0) * delta)
-    
-    _handle_collisions(delta)
-    
-
-func _calc_velocity(delta: float) -> void:
     # Horizontal Movement
     velocity.x = h_input * ground_speed + floor_velocity.x
 
@@ -83,16 +74,21 @@ func _calc_velocity(delta: float) -> void:
     velocity.y = min(velocity.y, abs(jump_speed))
     jump_timer -= delta
 
+    colY = move_and_collide(Vector2(0, velocity.y) * delta)
+    colX = move_and_collide(Vector2(velocity.x, 0) * delta)
+
+    _handle_collisions(delta)
+
 
 func _handle_collisions(delta: float) -> void:
     # Vertical
     if abs(velocity.y) > 0 and colY:
         on_ground = velocity.y > 0
         velocity.y = 0
-        
+
         if on_ground:
             jump_timer = jump_forgiveness
-            
+
             # Stick to platform going down
             floor_velocity = colY.collider_velocity
             floor_normal = colY.normal
@@ -114,15 +110,14 @@ func _handle_collisions(delta: float) -> void:
         # Check if walked off ledge/down slope
         elif on_ground and colY and colY.remainder.y > 0:
             colY = move_and_collide(colY.remainder)
-            
+
             if not colY:
                 var slope_desc = abs(velocity.x) * delta / min_slope_y_normal
                 var should_stick = test_move(transform, Vector2(0, slope_desc))
-                
+
                 # Stick moving down slopes
                 if should_stick:
                     move_and_collide(Vector2(0, abs(slope_desc)))
                 else:
                     on_ground = false
-                
-                
+

@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://assets/tilesets/brick_tiles.tres" type="TileSet" id=1]
 [ext_resource path="res://scenes/moving_platform.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/playerCollide.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scenes/coveyorBelt.tscn" type="PackedScene" id=4]
 
 [node name="Node2D" type="Node2D"]
 
@@ -22,7 +23,9 @@ movement = Vector2( 350, 0 )
 
 [node name="player" parent="." instance=ExtResource( 3 )]
 position = Vector2( 110, 70 )
-ground_speed = 350.0
-jump_height = 150.0
-jump_distance = 200.0
+
+[node name="ConveyorBelt" parent="." instance=ExtResource( 4 )]
+position = Vector2( 169, 536 )
+scale = Vector2( 4.41, 1 )
+constant_linear_velocity = Vector2( 300, 0 )
 

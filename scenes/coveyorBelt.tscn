@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 80, 15.005 )
+
+[node name="ConveyorBelt" type="StaticBody2D"]
+constant_linear_velocity = Vector2( 10, 0 )
+
+[node name="ColorRect" type="ColorRect" parent="."]
+margin_left = -80.0
+margin_top = -15.0
+margin_right = 80.0
+margin_bottom = 15.0
+color = Color( 0.0392157, 0.0392157, 0.0392157, 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
+

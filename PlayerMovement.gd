@@ -1,7 +1,7 @@
 extends KinematicBody2D
 
 # Editor Parameters
-export var ground_speed: float = 500
+export var move_speed: float = 500
 export var jump_height: float = 200
 export var jump_distance: float = 300
 export var max_slope_angle: float = 45
@@ -30,8 +30,8 @@ var floor_velocity: Vector2 = Vector2()
 
 
 func _ready() -> void:
-    gravity = 2 * jump_height * pow(ground_speed, 2) / pow(jump_distance / 2, 2)
-    jump_speed = -2 * jump_height * ground_speed / (jump_distance / 2)
+    gravity = 2 * jump_height * pow(move_speed, 2) / pow(jump_distance / 2, 2)
+    jump_speed = -2 * jump_height * move_speed / (jump_distance / 2)
     max_slope_x_normal = sin(deg2rad(max_slope_angle + .1))
 
 
@@ -54,7 +54,7 @@ func _process(delta: float) -> void:
 
     # Movement Calculations------------------------------------
     # Horizontal Movement
-    velocity.x = h_input * ground_speed + floor_velocity.x
+    velocity.x = h_input * move_speed + floor_velocity.x
 
     # Vertical Movement
     if on_ground and jump_pressed:

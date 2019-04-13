@@ -40,10 +40,10 @@ var floor_velocity: Vector2 = Vector2()
 
 
 func set_on_ground(val: bool) -> void:
-    if not val and on_ground:
-        velocity.x += floor_velocity.x                
+    if not val:
+        velocity.x += floor_velocity.x
         floor_velocity = Vector2()
-    
+
     on_ground = val
 
 func _ready() -> void:
@@ -57,11 +57,11 @@ func _ready() -> void:
         friction = INF
     else:
         friction = move_speed / deccel_time
-    
+
     gravity = 2 * jump_height * pow(move_speed, 2) / pow(jump_distance / 2, 2)
     jump_speed = -2 * jump_height * move_speed / (jump_distance / 2)
-    
-    max_slope_normal = Vector2(sin(deg2rad(max_slope_angle + 1)), 
+
+    max_slope_normal = Vector2(sin(deg2rad(max_slope_angle + 1)),
                                cos(deg2rad(max_slope_angle + 1)))
 
 
@@ -87,7 +87,7 @@ func _physics_process(delta: float) -> void:
 
 
 func _movement(delta: float) -> void:
-    # Horizontal Movement
+    # Horizontal Movement=
     if h_input == sign(velocity.x) and abs(velocity.x) >= move_speed:
         if on_ground:
             _apply_friction(delta)
@@ -96,14 +96,17 @@ func _movement(delta: float) -> void:
     elif h_input != 0:
         # Determine force applied to player
         var force = h_input * move_force * delta
-        
+
         if not on_ground:
             force *= air_mobility
         elif h_input != sign(velocity.x):
             _apply_friction(delta)
 
         # Apply force
-        velocity.x = sign(force) * min(move_speed, abs(velocity.x + force))
+        if h_input == sign(velocity.x):
+            velocity.x = h_input * min(move_speed, abs(velocity.x + force))
+        else:
+            velocity.x += force
     # Friction
     elif on_ground:
         _apply_friction(delta)
@@ -138,13 +141,11 @@ func _handle_collisions(delta: float) -> void:
         velocity.y = 0
 
         if on_ground:
-            jump_timer = jump_forgiveness
-
-            # Stick to moving platform going down
             floor_velocity = colY.collider_velocity
             velocity.y = max(floor_velocity.y, 0)
+            jump_timer = jump_forgiveness
     else:
-        on_ground = false
+        self.on_ground = false
 
     # Horizontal
     if velocity.x != 0:
@@ -157,7 +158,7 @@ func _handle_collisions(delta: float) -> void:
                 var y_off = -(colX.normal.x / colX.normal.y) * colX.remainder.x
                 colY = move_and_collide(Vector2(0, y_off))
                 colX = move_and_collide(colX.remainder)
-                
+
                 # Check for popping above slope
                 if not test_move(transform, Vector2(0, 0.1)):
                     _check_stick(-y_off)
@@ -177,5 +178,5 @@ func _check_stick(stick: float) -> void:
     if should_stick:
         colY = move_and_collide(Vector2(0, stick))
     else:
-        on_ground = false
-        
+        self.on_ground = false
+

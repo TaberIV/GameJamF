@@ -1,0 +1,35 @@
+[gd_scene load_steps=3 format=2]
+
+[sub_resource type="GDScript" id=3]
+script/source = "extends Area2D
+
+export var velocity: Vector2 = Vector2(750, 0)
+
+func _process(delta: float) -> void:
+    position += velocity * delta"
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 5, 5 )
+
+[node name="Bullet" type="Area2D"]
+script = SubResource( 3 )
+
+[node name="ColorRect2" type="ColorRect" parent="."]
+margin_left = -5.0
+margin_top = -5.0
+margin_right = 5.0
+margin_bottom = 5.0
+rect_pivot_offset = Vector2( 5, 5 )
+color = Color( 1, 1, 0, 1 )
+
+[node name="ColorRect" type="ColorRect" parent="."]
+margin_left = -4.0
+margin_top = -4.0
+margin_right = 4.0
+margin_bottom = 4.0
+rect_pivot_offset = Vector2( 4, 44 )
+color = Color( 0, 0.764706, 1, 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 2 )
+

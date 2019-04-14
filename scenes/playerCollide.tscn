@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://CharacterController.gd" type="Script" id=1]
 [ext_resource path="res://assets/art/player/playerBlue_walk1.png" type="Texture" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://assets/art/player/playerBlue_walk4.png" type="Texture" id=4]
 [ext_resource path="res://assets/art/player/playerBlue_duck.png" type="Texture" id=5]
 [ext_resource path="res://assets/art/player/playerBlue_walk2.png" type="Texture" id=6]
+[ext_resource path="res://scenes/BulletSpawn.gd" type="Script" id=7]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -45,3 +46,8 @@ animation = "idle"
 position = Vector2( 0, -0.158424 )
 shape = SubResource( 2 )
 
+[node name="BulletSpawn" type="Node2D" parent="."]
+position = Vector2( 18.1479, -5.30162 )
+script = ExtResource( 7 )
+
+[connection signal="shoot" from="BulletSpawn" to="." method="_on_BulletSpawn_shoot"]

@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Node2D
+
+
+func _on_player_shoot(Bullet, direction, location) -> void:
+    var b = Bullet.instance()
+    add_child(b)
+    b.position = location
+    b.velocity *= direction"
+
+[node name="BulletContainer" type="Node2D"]
+script = SubResource( 1 )
+

@@ -1,5 +1,7 @@
 extends KinematicBody2D
 
+signal shoot(bullet, direction, rotation)
+
 # Editor Parameters
 export var move_speed: float = 350
 export var accel_time: float = 0.1
@@ -97,7 +99,7 @@ func get_input() -> void:
         h_input -= 1
     if Input.is_action_pressed("right"):
         h_input += 1
-        
+ 
     if h_input == 0:
         h_input = Input.get_joy_axis(0, JOY_ANALOG_LX)
     
@@ -233,5 +235,15 @@ func _set_anim() -> void:
         sprite.play("duck")
     else:
         sprite.play("idle")
+
+
+func _on_BulletSpawn_shoot(bullet, location) -> void:
+    var dir: int
+    if sprite.flip_h:
+        dir = -1
+    else:
+        dir = 1
     
-    
+    location.x *= dir
+    location += sprite.offset
+    emit_signal("shoot", bullet, dir, position + location)

@@ -1,25 +1,37 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://CharacterController.gd" type="Script" id=1]
 [ext_resource path="res://assets/art/player/playerBlue_walk1.png" type="Texture" id=2]
-[ext_resource path="res://assets/art/player/playerBlue_walk2.png" type="Texture" id=3]
-[ext_resource path="res://assets/art/player/playerBlue_walk3.png" type="Texture" id=4]
+[ext_resource path="res://assets/art/player/playerBlue_walk3.png" type="Texture" id=3]
+[ext_resource path="res://assets/art/player/playerBlue_walk4.png" type="Texture" id=4]
+[ext_resource path="res://assets/art/player/playerBlue_duck.png" type="Texture" id=5]
+[ext_resource path="res://assets/art/player/playerBlue_walk2.png" type="Texture" id=6]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
 "frames": [ ExtResource( 2 ) ],
 "loop": true,
-"name": "stand",
+"name": "idle",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 4 ), ExtResource( 3 ) ],
+"frames": [ ExtResource( 3 ), ExtResource( 4 ), ExtResource( 5 ) ],
+"loop": false,
+"name": "duck",
+"speed": 15.0
+}, {
+"frames": [ ExtResource( 2 ), ExtResource( 6 ), ExtResource( 3 ), ExtResource( 3 ), ExtResource( 6 ) ],
 "loop": true,
 "name": "walk",
-"speed": 5.0
+"speed": 15.0
+}, {
+"frames": [ ExtResource( 3 ), ExtResource( 4 ) ],
+"loop": false,
+"name": "fall",
+"speed": 10.0
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 8.15434, 26.2336 )
+extents = Vector2( 8.15434, 26.8801 )
 
 [node name="player" type="KinematicBody2D"]
 collision/safe_margin = 0.01
@@ -27,9 +39,9 @@ script = ExtResource( 1 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 1 )
-animation = "stand"
+animation = "idle"
 
 [node name="BodyCollider" type="CollisionShape2D" parent="."]
-position = Vector2( 0, -0.836235 )
+position = Vector2( 0, -0.158424 )
 shape = SubResource( 2 )
 

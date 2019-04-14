@@ -6,6 +6,7 @@ export var accel_time: float = 0.1
 export var deccel_time: float = 0.1
 
 export var jump_height: float = 150
+export(float, 0.1, 1) var jump_variance: float = 0.5
 export var jump_distance: float = 200
 export(float, 0, 1) var air_mobility: float = 0.8
 export var jump_forgiveness: float = 0.1
@@ -23,31 +24,38 @@ var max_slope_normal: Vector2
 
 # Input state
 var h_input: int = 0
+var d_input: bool = false
 
 var jump: bool = false
 var jump_pressed: bool = false
 var jump_timer: float = 0
 
 # Movement state
-var velocity = Vector2()
+var velocity: Vector2 = Vector2()
+var fast_fall: bool = false
 
 # Collision info
 var colY: KinematicCollision2D
 var colX: KinematicCollision2D
 
-var on_ground: bool = false setget set_on_ground
+var on_ground: bool = false setget _set_on_ground
+var on_wall: bool = false
 var floor_velocity: Vector2 = Vector2()
 
+# References
+var sprite: AnimatedSprite
 
-func set_on_ground(val: bool) -> void:
+# Setters/Getters
+func _set_on_ground(val: bool) -> void:
     if not val:
         velocity.x += floor_velocity.x
         floor_velocity = Vector2()
 
     on_ground = val
 
+
 func _ready() -> void:
-    # Define constants
+    # Set constants
     if accel_time == 0:
         move_force = INF
     else:
@@ -63,48 +71,63 @@ func _ready() -> void:
 
     max_slope_normal = Vector2(sin(deg2rad(max_slope_angle + 1)),
                                cos(deg2rad(max_slope_angle + 1)))
-
-
-func get_input() -> void:
-    # Horizontal Input
-    h_input = 0
-
-    if Input.is_action_pressed("left"):
-        h_input -= 1
-    if Input.is_action_pressed("right"):
-        h_input += 1
-
-    # Jump Input
-    jump = Input.is_action_pressed("jump")
-    jump_pressed = Input.is_action_just_pressed("jump")
+    
+    # Find references
+    sprite = $AnimatedSprite
 
 
 func _physics_process(delta: float) -> void:
     get_input()
 
-    # Move
     _movement(delta)
+    
+    _set_anim()
+
+
+func get_input() -> void:
+    # Duck input
+    d_input = Input.is_action_pressed("duck")
+    if not d_input:
+        d_input = Input.get_joy_axis(0, JOY_ANALOG_LY) > 0
+    
+    # Movement Input
+    h_input = 0
+    
+    if Input.is_action_pressed("left"):
+        h_input -= 1
+    if Input.is_action_pressed("right"):
+        h_input += 1
+        
+    if h_input == 0:
+        h_input = Input.get_joy_axis(0, JOY_ANALOG_LX)
+    
+    # Jump Input
+    jump_pressed = Input.is_action_just_pressed("jump")
+    jump = Input.is_action_pressed("jump")
+    
+    if velocity.y < 0 and not jump:
+        fast_fall = true
 
 
 func _movement(delta: float) -> void:
-    # Horizontal Movement=
-    if h_input == sign(velocity.x) and abs(velocity.x) >= move_speed:
+    # Horizontal Movement
+    if sign(h_input) == sign(velocity.x) and abs(velocity.x) >= move_speed:
         if on_ground:
             _apply_friction(delta)
             if abs(velocity.x) < move_speed:
-                velocity.x = sign(velocity.x) * move_speed
+                velocity.x = h_input * move_speed
     elif h_input != 0:
         # Determine force applied to player
         var force = h_input * move_force * delta
 
         if not on_ground:
             force *= air_mobility
-        elif h_input != sign(velocity.x):
+        elif sign(force) != sign(velocity.x):
             _apply_friction(delta)
 
         # Apply force
-        if h_input == sign(velocity.x):
-            velocity.x = h_input * min(move_speed, abs(velocity.x + force))
+        if sign(force) == sign(velocity.x):
+            velocity.x = sign(force) * min(abs(h_input) * move_speed, abs(velocity.x + force))
         else:
             velocity.x += force
     # Friction
@@ -112,14 +135,24 @@ func _movement(delta: float) -> void:
         _apply_friction(delta)
 
     # Vertical Movement
+    # Jump
     if (on_ground or jump_timer > 0) and jump_pressed:
         velocity.y = jump_speed
         jump_timer = 0
-
-    velocity.y += gravity * delta
-    velocity.y = min(velocity.y, abs(jump_speed))
     jump_timer -= delta
+    
+    # Gravity
+    var gravity_force = gravity * delta
+    if fast_fall and velocity.y < 0:
+         gravity_force /= jump_variance
+    else:
+        fast_fall = false
+        
+    velocity.y += gravity_force
+        
+    velocity.y = min(velocity.y, abs(jump_speed))
 
+    # Move and collide
     colY = move_and_collide(Vector2(0, velocity.y) * delta)
     colX = move_and_collide(Vector2(velocity.x + floor_velocity.x, 0) * delta)
 
@@ -137,12 +170,16 @@ func _apply_friction(delta: float):
 func _handle_collisions(delta: float) -> void:
     # Vertical
     if abs(velocity.y) > 0 and colY:
-        on_ground = velocity.y > 0
+        var was_on_ground = on_ground
+        self.on_ground = velocity.y > 0
         velocity.y = 0
 
         if on_ground:
             floor_velocity = colY.collider_velocity
             velocity.y = max(floor_velocity.y, 0)
+            if not was_on_ground:
+                velocity.x -= floor_velocity.x
+                
             jump_timer = jump_forgiveness
     else:
         self.on_ground = false
@@ -153,23 +190,23 @@ func _handle_collisions(delta: float) -> void:
             # Collide with wall
             if abs(colX.normal.x) > max_slope_normal.x:
                 velocity.x = 0
+                on_wall = true
             # Walk up slopes
             else:
+                on_wall = false
+                
                 var y_off = -(colX.normal.x / colX.normal.y) * colX.remainder.x
                 colY = move_and_collide(Vector2(0, y_off))
                 colX = move_and_collide(colX.remainder)
 
                 # Check for popping above slope
-                if not test_move(transform, Vector2(0, 0.1)):
-                    _check_stick(-y_off)
+                _check_stick(-y_off)
+                
         # Check if walked off ledge/down slope
-        elif on_ground and colY and colY.remainder.y > 0:
-            colY = move_and_collide(colY.remainder)
-
+        elif on_ground and not test_move(transform, Vector2(0, 1)):
             # Stick moving down slopes
-            if not colY:
-                var slope_desc = abs(velocity.x) * delta / max_slope_normal.y
-                _check_stick(slope_desc)
+            var slope_desc = abs(velocity.x) * delta / max_slope_normal.y
+            _check_stick(slope_desc)
 
 
 func _check_stick(stick: float) -> void:
@@ -177,6 +214,24 @@ func _check_stick(stick: float) -> void:
 
     if should_stick:
         colY = move_and_collide(Vector2(0, stick))
+        self.on_ground = true
     else:
         self.on_ground = false
 
+
+func _set_anim() -> void:
+    if h_input != 0:
+        sprite.flip_h = h_input < 0
+    
+    sprite.offset = Vector2(0, 0)    
+    if not on_ground:
+        sprite.play("fall")
+    elif abs(velocity.x) > 0:
+        sprite.play("walk")
+    elif d_input:
+        sprite.offset = Vector2(0, 3.5 * sprite.frame)
+        sprite.play("duck")
+    else:
+        sprite.play("idle")
+    
+    

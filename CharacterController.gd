@@ -3,7 +3,7 @@ extends KinematicBody2D
 class_name CharacterController
 
 # Editor Parameters
-export var move_speed: float = 350
+export var move_speed: float = 250
 export var accel_time: float = 0.1
 export var deccel_time: float = 0.1
 
@@ -48,6 +48,7 @@ var floor_velocity: Vector2 = Vector2()
 
 # References
 var sprite: AnimatedSprite
+var jump_sound: AudioStreamPlayer
 
 # Setters/Getters
 func _set_on_ground(val: bool) -> void:
@@ -78,6 +79,7 @@ func _ready() -> void:
     
     # Find references
     sprite = $AnimatedSprite
+    jump_sound = $JumpSound
 
 
 func _physics_process(delta: float) -> void:
@@ -143,6 +145,7 @@ func _movement(delta: float) -> void:
     if (on_ground or jump_timer > 0) and jump_pressed:
         velocity.y = jump_speed
         jump_timer = 0
+        jump_sound.play()
     jump_timer -= delta
     
     # Gravity

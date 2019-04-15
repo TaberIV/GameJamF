@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://assets/tilesets/brick_tiles.tres" type="TileSet" id=1]
 [ext_resource path="res://scenes/moving_platform.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/playerCollide.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scenes/coveyorBelt.tscn" type="PackedScene" id=4]
+[ext_resource path="res://assets/sound/House In a Forest Loop.ogg" type="AudioStream" id=5]
 
 [node name="Node2D" type="Node2D"]
 
@@ -37,4 +38,9 @@ position = Vector2( 230, 545 )
 rotation = -3.14159
 scale = Vector2( 4.41, 1 )
 constant_linear_velocity = Vector2( 300, 0 )
+
+[node name="Music" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 5 )
+volume_db = -3.0
+autoplay = true
 

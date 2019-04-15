@@ -1,6 +1,6 @@
 extends KinematicBody2D
 
-signal shoot(bullet, direction, rotation)
+class_name CharacterController
 
 # Editor Parameters
 export var move_speed: float = 350
@@ -35,6 +35,8 @@ var jump_timer: float = 0
 # Movement state
 var velocity: Vector2 = Vector2()
 var fast_fall: bool = false
+
+var dir: int = 1
 
 # Collision info
 var colY: KinematicCollision2D
@@ -79,14 +81,14 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-    get_input()
+    _get_input()
 
     _movement(delta)
     
     _set_anim()
 
 
-func get_input() -> void:
+func _get_input() -> void:
     # Duck input
     d_input = Input.is_action_pressed("duck")
     if not d_input:
@@ -223,7 +225,8 @@ func _check_stick(stick: float) -> void:
 
 func _set_anim() -> void:
     if h_input != 0:
-        sprite.flip_h = h_input < 0
+        dir = sign(h_input)
+        sprite.flip_h = dir < 0
     
     sprite.offset = Vector2(0, 0)    
     if not on_ground:
@@ -236,14 +239,3 @@ func _set_anim() -> void:
     else:
         sprite.play("idle")
 
-
-func _on_BulletSpawn_shoot(bullet, location) -> void:
-    var dir: int
-    if sprite.flip_h:
-        dir = -1
-    else:
-        dir = 1
-    
-    location.x *= dir
-    location += sprite.offset
-    emit_signal("shoot", bullet, dir, position + location)

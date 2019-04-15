@@ -1,18 +1,24 @@
 [gd_scene load_steps=3 format=2]
 
-[sub_resource type="GDScript" id=3]
+[sub_resource type="GDScript" id=1]
 script/source = "extends Area2D
 
 export var velocity: Vector2 = Vector2(750, 0)
 
+func _ready() -> void:
+    $VisibilityNotifier2D.connect(\"screen_exited\", self, \"_on_screen_exit\")
+
 func _process(delta: float) -> void:
-    position += velocity * delta"
+    position += velocity * delta
+    
+func _on_screen_exit() -> void:
+    queue_free()"
 
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 5, 5 )
 
 [node name="Bullet" type="Area2D"]
-script = SubResource( 3 )
+script = SubResource( 1 )
 
 [node name="ColorRect2" type="ColorRect" parent="."]
 margin_left = -5.0
@@ -32,4 +38,6 @@ color = Color( 0, 0.764706, 1, 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 2 )
+
+[node name="VisibilityNotifier2D" type="VisibilityNotifier2D" parent="."]
 

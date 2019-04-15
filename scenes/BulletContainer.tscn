@@ -4,6 +4,10 @@
 script/source = "extends Node2D
 
 
+func _ready() -> void:
+    print(\"Hello\")
+
+
 func _on_player_shoot(Bullet, direction, location) -> void:
     var b = Bullet.instance()
     add_child(b)

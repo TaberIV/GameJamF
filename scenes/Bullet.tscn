@@ -15,7 +15,6 @@ func _on_screen_exit() -> void:
     queue_free()"
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 5, 5 )
 
 [node name="Bullet" type="Area2D"]
 script = SubResource( 1 )
@@ -33,7 +32,7 @@ margin_left = -4.0
 margin_top = -4.0
 margin_right = 4.0
 margin_bottom = 4.0
-rect_pivot_offset = Vector2( 4, 44 )
+rect_pivot_offset = Vector2( 4, 4 )
 color = Color( 0, 0.764706, 1, 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=30 format=2]
 
 [ext_resource path="res://CharacterController.gd" type="Script" id=1]
 [ext_resource path="res://assets/art/player/playerBlue_walk1.png" type="Texture" id=2]
@@ -8,7 +8,23 @@
 [ext_resource path="res://assets/art/player/playerBlue_duck.png" type="Texture" id=6]
 [ext_resource path="res://assets/sound/shoot.wav" type="AudioStream" id=7]
 [ext_resource path="res://assets/sound/shot_charged.wav" type="AudioStream" id=8]
-[ext_resource path="res://assets/sound/jump.wav" type="AudioStream" id=9]
+[ext_resource path="res://assets/art/SparkEffect/frame0000.png" type="Texture" id=9]
+[ext_resource path="res://assets/art/SparkEffect/frame0001.png" type="Texture" id=10]
+[ext_resource path="res://assets/art/SparkEffect/frame0002.png" type="Texture" id=11]
+[ext_resource path="res://assets/art/SparkEffect/frame0003.png" type="Texture" id=12]
+[ext_resource path="res://assets/art/SparkEffect/frame0004.png" type="Texture" id=13]
+[ext_resource path="res://assets/art/SparkEffect/frame0005.png" type="Texture" id=14]
+[ext_resource path="res://assets/art/SparkEffect/frame0006.png" type="Texture" id=15]
+[ext_resource path="res://assets/art/SparkEffect/frame0007.png" type="Texture" id=16]
+[ext_resource path="res://assets/art/SparkEffect/frame0008.png" type="Texture" id=17]
+[ext_resource path="res://assets/art/SparkEffect/frame0009.png" type="Texture" id=18]
+[ext_resource path="res://assets/art/SparkEffect/frame0010.png" type="Texture" id=19]
+[ext_resource path="res://assets/art/SparkEffect/frame0011.png" type="Texture" id=20]
+[ext_resource path="res://assets/art/SparkEffect/frame0012.png" type="Texture" id=21]
+[ext_resource path="res://assets/art/SparkEffect/frame0013.png" type="Texture" id=22]
+[ext_resource path="res://assets/art/SparkEffect/frame0014.png" type="Texture" id=23]
+[ext_resource path="res://assets/art/SparkEffect/frame0015.png" type="Texture" id=24]
+[ext_resource path="res://assets/sound/jump.wav" type="AudioStream" id=25]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -45,14 +61,19 @@ export var burst_num: int = 3
 export var burst_cooldown: float = 0.6
 export var shot_charge_time: float = 0.8
 
+
 # Scenes
 var Bullet: PackedScene = preload(\"res://scenes/Bullet.tscn\")
+var ChargedBullet: PackedScene = preload(\"res://scenes/ChargedBullet.tscn\")
+
 
 # References
 var scene: Node2D
 var player: CharacterController
 var sprite: AnimatedSprite
+var charge_effect: AnimatedSprite
 var shoot_sound: AudioStreamPlayer2D
+var charged_shoot_sound: AudioStreamPlayer2D
 var shot_charged_sound: AudioStreamPlayer2D
 
 # Constants
@@ -72,16 +93,22 @@ var burst_cooldown_timer: float = 0
 var shot_buffered: bool = false
 var shot_charged: bool = false
 
+# Visual state
+var current_offset
+
 
 func _ready() -> void:
     shoot_sound = $Shoot
+    charged_shoot_sound = $ShootCharged
     shot_charged_sound = $ShotCharged
+    charge_effect = $ChargeEffect
     
     player = get_parent()
     sprite = get_node(\"../AnimatedSprite\")
     scene = player.get_parent()
     
     offset = position
+    position = Vector2()
 
 
 func _process(delta: float) -> void:
@@ -96,13 +123,25 @@ func _process(delta: float) -> void:
     # Charge shot timer  
     if shoot_hold_time > shot_charge_time and shot_charged == false:
         shot_charged = true
+        charge_effect.visible = true
+        charge_effect.play(\"active\")
         shot_charged_sound.play()
+    
+    # Visual offset
+    current_offset = offset
+    var dir = player.dir
+    current_offset.x *= dir
+    current_offset += sprite.get_offset()
+    
+    # Charge effect sprite
+    charge_effect.position = current_offset
+    charge_effect.flip_h = dir < 0
     
     # Action
     _get_input()
 
     if shoot_pressed or shot_buffered:
-        var in_burst = burst_cooldown == 0 or burst_counter < burst_num
+        var in_burst = burst_counter < burst_num
         
         if shoot_cooldown_timer == 0 and in_burst:
             # Manage cooldowns
@@ -127,34 +166,48 @@ func _process(delta: float) -> void:
         shoot_hold_time += delta
     elif shoot_released:
         if shoot_hold_time > shot_charge_time:
-            _shoot()
+            _shoot(true)
+            burst_cooldown_timer = burst_cooldown / 2
+            burst_counter = burst_num
         shoot_hold_time = 0
         shot_charged = false
         
 
 
-func _shoot() -> void:
-    # Values needed for bullet
-    var current_offset = offset
-    var dir = player.dir
-    current_offset.x *= dir
-    current_offset += sprite.get_offset()
-
+func _shoot(charged: bool = false) -> void:
     # Create bullet
-    var bullet = Bullet.instance()
+    var bullet = (ChargedBullet if charged else Bullet).instance()
     bullet.position = player.global_position + current_offset
     bullet.velocity.x *= player.dir
     scene.add_child(bullet)
     
     # Play sound
-    shoot_sound.play()
+    (charged_shoot_sound if charged else shoot_sound).play()
     
 
 func _get_input() -> void:
     shoot_held = Input.is_action_pressed(\"shoot\")
     shoot_pressed = Input.is_action_just_pressed(\"shoot\")
     shoot_released = Input.is_action_just_released(\"shoot\")
+
+
+func _on_ChargeEffect_animation_finished() -> void:
+    charge_effect.visible = false
+    charge_effect.play(\"default\")
 "
+
+[sub_resource type="SpriteFrames" id=4]
+animations = [ {
+"frames": [  ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 9 ), ExtResource( 10 ), ExtResource( 11 ), ExtResource( 12 ), ExtResource( 13 ), ExtResource( 14 ), ExtResource( 15 ), ExtResource( 16 ), ExtResource( 17 ), ExtResource( 18 ), ExtResource( 19 ), ExtResource( 20 ), ExtResource( 21 ), ExtResource( 22 ), ExtResource( 23 ), ExtResource( 24 ) ],
+"loop": false,
+"name": "active",
+"speed": 60.0
+} ]
 
 [node name="player" type="KinematicBody2D"]
 collision/safe_margin = 0.01
@@ -169,7 +222,6 @@ position = Vector2( 0, -0.158424 )
 shape = SubResource( 2 )
 
 [node name="BulletSpawn" type="Node2D" parent="."]
-editor/display_folded = true
 position = Vector2( 15, -5 )
 script = SubResource( 3 )
 
@@ -177,12 +229,23 @@ script = SubResource( 3 )
 stream = ExtResource( 7 )
 volume_db = -15.0
 
+[node name="ShootCharged" type="AudioStreamPlayer" parent="BulletSpawn"]
+stream = ExtResource( 7 )
+volume_db = -15.0
+pitch_scale = 0.75
+
 [node name="ShotCharged" type="AudioStreamPlayer" parent="BulletSpawn"]
 stream = ExtResource( 8 )
 volume_db = -15.0
 
+[node name="ChargeEffect" type="AnimatedSprite" parent="BulletSpawn"]
+visible = false
+frames = SubResource( 4 )
+animation = "active"
+
 [node name="JumpSound" type="AudioStreamPlayer" parent="."]
-stream = ExtResource( 9 )
+stream = ExtResource( 25 )
 volume_db = -25.0
 pitch_scale = 1.5
 
+[connection signal="animation_finished" from="BulletSpawn/ChargeEffect" to="BulletSpawn" method="_on_ChargeEffect_animation_finished"]

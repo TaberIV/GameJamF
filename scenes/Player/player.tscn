@@ -1,13 +1,13 @@
-[gd_scene load_steps=34 format=2]
+[gd_scene load_steps=37 format=2]
 
 [ext_resource path="res://CharacterController.gd" type="Script" id=1]
 [ext_resource path="res://assets/art/player/playerBlue_walk1.png" type="Texture" id=2]
-[ext_resource path="res://assets/art/player/playerBlue_walk3.png" type="Texture" id=3]
-[ext_resource path="res://assets/art/player/playerBlue_walk4.png" type="Texture" id=4]
-[ext_resource path="res://assets/art/player/playerBlue_duck.png" type="Texture" id=5]
-[ext_resource path="res://assets/art/player/playerBlue_hit.png" type="Texture" id=6]
-[ext_resource path="res://assets/art/player/playerBlue_dead.png" type="Texture" id=7]
-[ext_resource path="res://assets/art/player/playerBlue_walk2.png" type="Texture" id=8]
+[ext_resource path="res://assets/art/player/playerBlue_hit.png" type="Texture" id=3]
+[ext_resource path="res://assets/art/player/playerBlue_dead.png" type="Texture" id=4]
+[ext_resource path="res://assets/art/player/playerBlue_walk2.png" type="Texture" id=5]
+[ext_resource path="res://assets/art/player/playerBlue_walk3.png" type="Texture" id=6]
+[ext_resource path="res://assets/art/player/playerBlue_walk4.png" type="Texture" id=7]
+[ext_resource path="res://assets/art/player/playerBlue_duck.png" type="Texture" id=8]
 [ext_resource path="res://assets/sound/shoot.wav" type="AudioStream" id=9]
 [ext_resource path="res://assets/sound/shot_charged.wav" type="AudioStream" id=10]
 [ext_resource path="res://assets/art/SparkEffect/frame0000.png" type="Texture" id=11]
@@ -27,6 +27,7 @@
 [ext_resource path="res://assets/art/SparkEffect/frame0014.png" type="Texture" id=25]
 [ext_resource path="res://assets/art/SparkEffect/frame0015.png" type="Texture" id=26]
 [ext_resource path="res://assets/sound/jump.wav" type="AudioStream" id=27]
+[ext_resource path="res://assets/sound/hit3.ogg" type="AudioStream" id=28]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -35,30 +36,30 @@ animations = [ {
 "name": "idle",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 3 ), ExtResource( 4 ), ExtResource( 5 ) ],
-"loop": false,
-"name": "duck",
-"speed": 15.0
-}, {
-"frames": [ ExtResource( 6 ) ],
+"frames": [ ExtResource( 3 ) ],
 "loop": true,
 "name": "hit",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 3 ), ExtResource( 4 ) ],
-"loop": false,
-"name": "fall",
-"speed": 10.0
-}, {
-"frames": [ ExtResource( 7 ) ],
+"frames": [ ExtResource( 4 ) ],
 "loop": true,
 "name": "dead",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 2 ), ExtResource( 8 ), ExtResource( 3 ), ExtResource( 3 ), ExtResource( 8 ) ],
+"frames": [ ExtResource( 2 ), ExtResource( 5 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 5 ) ],
 "loop": true,
 "name": "walk",
 "speed": 15.0
+}, {
+"frames": [ ExtResource( 6 ), ExtResource( 7 ), ExtResource( 8 ) ],
+"loop": false,
+"name": "duck",
+"speed": 15.0
+}, {
+"frames": [ ExtResource( 6 ), ExtResource( 7 ) ],
+"loop": false,
+"name": "fall",
+"speed": 10.0
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
@@ -75,8 +76,8 @@ export var shot_charge_time: float = 0.8
 
 
 # Scenes
-var Bullet: PackedScene = preload(\"res://scenes/Bullet.tscn\")
-var ChargedBullet: PackedScene = preload(\"res://scenes/ChargedBullet.tscn\")
+export var Bullet: PackedScene = preload(\"res://scenes/Player/Bullet.tscn\")
+export var ChargedBullet: PackedScene = preload(\"res://scenes/Player/ChargedBullet.tscn\")
 
 
 # References
@@ -133,8 +134,10 @@ func _process(delta: float) -> void:
         burst_counter = 0
   
     # Charge shot timer  
-    if shoot_hold_time > shot_charge_time and shot_charged == false:
+    if shoot_hold_time >= shot_charge_time and shot_charged == false:
         shot_charged = true
+        
+        # Feedback
         charge_effect.visible = true
         charge_effect.play(\"active\")
         shot_charged_sound.play()
@@ -150,40 +153,50 @@ func _process(delta: float) -> void:
     charge_effect.flip_h = dir < 0
     
     # Action
-    _get_input()
-
-    if shoot_pressed or shot_buffered:
-        var in_burst = burst_counter < burst_num
-        
-        if shoot_cooldown_timer == 0 and in_burst:
-            # Manage cooldowns
-            shoot_cooldown_timer = shoot_cooldown
-            if burst_cooldown_timer == 0:
-                burst_cooldown_timer = burst_cooldown
-                burst_counter = 1
-            else:
-                burst_counter += 1
-                if burst_cooldown / burst_counter > burst_cooldown_timer:
+    if not player.hit and not player.dead:
+        _get_input()
+    
+        if shoot_pressed or shot_buffered:
+            var in_burst = burst_counter < burst_num
+            
+            if shoot_cooldown_timer == 0 and in_burst:
+                # Manage cooldowns
+                shoot_cooldown_timer = shoot_cooldown
+                if burst_cooldown_timer == 0:
                     burst_cooldown_timer = burst_cooldown
                     burst_counter = 1
+                else:
+                    burst_counter += 1
+                    if burst_cooldown / burst_counter > burst_cooldown_timer:
+                        burst_cooldown_timer = burst_cooldown
+                        burst_counter = 1
+                    
+                shot_buffered = false
                 
-            shot_buffered = false
+                # Shoot
+                _shoot()
+            else:
+                shot_buffered = in_burst 
+                
+        elif shoot_held:
+            shoot_hold_time = min(shoot_hold_time + delta, shot_charge_time)
             
-            # Shoot
-            _shoot()
-        else:
-            shot_buffered = in_burst 
-            
-    elif shoot_held:
-        shoot_hold_time += delta
-    elif shoot_released:
-        if shoot_hold_time > shot_charge_time:
-            _shoot(true)
-            burst_cooldown_timer = burst_cooldown / 2
-            burst_counter = burst_num
+            var is_vibrating = Input.get_joy_vibration_strength(0) != Vector2()
+            if shoot_hold_time <= shot_charge_time and not is_vibrating:
+                Input.start_joy_vibration(0, 0.2, 0)      
+            elif shoot_hold_time >= shot_charge_time and is_vibrating:
+                Input.stop_joy_vibration(0)
+        elif shoot_released:
+            if shoot_hold_time >= shot_charge_time:
+                _shoot(true)
+                burst_cooldown_timer = burst_cooldown / 2
+                burst_counter = burst_num
+            shoot_hold_time = 0
+            shot_charged = false
+            Input.stop_joy_vibration(0)
+    else:
         shoot_hold_time = 0
-        shot_charged = false
-        
+        Input.stop_joy_vibration(0)        
 
 
 func _shoot(charged: bool = false) -> void:
@@ -221,8 +234,10 @@ animations = [ {
 "speed": 60.0
 } ]
 
-[sub_resource type="GDScript" id=6]
+[sub_resource type="GDScript" id=5]
 script/source = "extends Area2D
+
+class_name Hurtbox
 
 signal take_damage(dir)
 signal die
@@ -232,9 +247,6 @@ export var faction: String = \"player\"
 
 # Health state
 var health: float
-
-# References
-var hurtbox: Area2D
 
 
 func _ready() -> void:
@@ -252,11 +264,18 @@ func _on_Hurtbox_area_entered(hit: Hitbox) -> void:
                 emit_signal(\"die\")
             var dir = 1 if hit.global_position.x > global_position.x else -1
             emit_signal(\"take_damage\", dir)
-    else:
-        pass"
+            $HitSound.play()"
 
-[sub_resource type="RectangleShape2D" id=7]
+[sub_resource type="RectangleShape2D" id=6]
 extents = Vector2( 20, 27 )
+
+[sub_resource type="GDScript" id=7]
+script/source = "extends Area2D
+
+"
+
+[sub_resource type="RectangleShape2D" id=8]
+extents = Vector2( 5.10806, 19.9217 )
 
 [node name="player" type="KinematicBody2D"]
 collision/safe_margin = 0.01
@@ -297,13 +316,25 @@ volume_db = -25.0
 pitch_scale = 1.5
 
 [node name="Hurtbox" type="Area2D" parent="."]
-visible = false
-script = SubResource( 6 )
+script = SubResource( 5 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
-shape = SubResource( 7 )
+shape = SubResource( 6 )
+
+[node name="HitSound" type="AudioStreamPlayer" parent="Hurtbox"]
+stream = ExtResource( 28 )
+volume_db = -10.0
+pitch_scale = 0.8
+
+[node name="StuckChecker" type="Area2D" parent="."]
+editor/display_folded = true
+script = SubResource( 7 )
+
+[node name="BodyCollider2" type="CollisionShape2D" parent="StuckChecker"]
+shape = SubResource( 8 )
+
+[node name="RespawnTimer" type="Timer" parent="."]
 
 [connection signal="animation_finished" from="BulletSpawn/ChargeEffect" to="BulletSpawn" method="_on_ChargeEffect_animation_finished"]
 [connection signal="area_entered" from="Hurtbox" to="Hurtbox" method="_on_Hurtbox_area_entered"]
-[connection signal="die" from="Hurtbox" to="." method="_on_Hurtbox_die"]
-[connection signal="take_damage" from="Hurtbox" to="." method="_on_Hurtbox_take_damage"]
+[connection signal="timeout" from="RespawnTimer" to="." method="_on_RespawnTimer_timeout"]

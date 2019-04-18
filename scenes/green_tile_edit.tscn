@@ -172,6 +172,7 @@ editor/display_folded = true
 polygon = PoolVector2Array( 0, 16, 32, 0, 96, 0, 128, 16, 128, 128, 0, 128 )
 
 [node name="GroundL2" type="Sprite" parent="."]
+editor/display_folded = true
 position = Vector2( 512, 0 )
 texture = ExtResource( 1 )
 centered = false
@@ -184,6 +185,7 @@ region_rect = Rect2( 896, 1280, 128, 128 )
 polygon = PoolVector2Array( 0, 16, 32, 0, 128, 0, 128, 128, 96, 128, 48, 112, 16, 96, 0, 64 )
 
 [node name="GroundR2" type="Sprite" parent="."]
+editor/display_folded = true
 position = Vector2( 640, 0 )
 texture = ExtResource( 1 )
 centered = false
@@ -196,7 +198,6 @@ region_rect = Rect2( 1024, 1280, 128, 128 )
 polygon = PoolVector2Array( 0, 0, 96, 0, 128, 16, 128, 64, 112, 96, 80, 112, 32, 128, 0, 128 )
 
 [node name="PlatformL" type="Sprite" parent="."]
-editor/display_folded = true
 position = Vector2( 0, 128 )
 texture = ExtResource( 1 )
 centered = false
@@ -206,7 +207,7 @@ region_rect = Rect2( 640, 1152, 128, 128 )
 [node name="StaticBody2D" type="StaticBody2D" parent="PlatformL"]
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="PlatformL/StaticBody2D"]
-polygon = PoolVector2Array( 0, 16, 32, 0, 128, 0, 128, 96, 64, 96, 0, 96 )
+polygon = PoolVector2Array( 0, 0, 128, 0, 128, 96, 64, 96, 0, 96 )
 
 [node name="Platform" type="Sprite" parent="."]
 editor/display_folded = true
@@ -232,10 +233,9 @@ region_rect = Rect2( 896, 1152, 128, 128 )
 [node name="StaticBody2D" type="StaticBody2D" parent="PlatformR"]
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="PlatformR/StaticBody2D"]
-polygon = PoolVector2Array( 0, 0, 96, 0, 128, 16, 128, 96, 0, 96 )
+polygon = PoolVector2Array( 0, 0, 128, 0, 128, 96, 0, 96 )
 
 [node name="Platform1" type="Sprite" parent="."]
-editor/display_folded = true
 position = Vector2( 384, 128 )
 texture = ExtResource( 1 )
 centered = false
@@ -245,7 +245,7 @@ region_rect = Rect2( 1024, 1152, 128, 128 )
 [node name="StaticBody2D" type="StaticBody2D" parent="Platform1"]
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Platform1/StaticBody2D"]
-polygon = PoolVector2Array( 0, 16, 32, 0, 96, 0, 128, 16, 128, 96, 0, 96 )
+polygon = PoolVector2Array( 0, 0, 128, 0, 128, 96, 0, 96 )
 
 [node name="SlopeUp" type="Sprite" parent="."]
 editor/display_folded = true
@@ -401,7 +401,6 @@ region_rect = Rect2( 1408, 768, 128, 128 )
 
 [node name="Flower4" type="Sprite" parent="."]
 position = Vector2( 0, 642 )
-scale = Vector2( 1, 1 )
 texture = ExtResource( 1 )
 centered = false
 region_enabled = true

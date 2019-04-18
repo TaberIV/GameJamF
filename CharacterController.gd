@@ -11,7 +11,7 @@ export var jump_height: float = 150
 export(float, 0.1, 1) var jump_variance: float = 0.5
 export var jump_distance: float = 200
 export(float, 0, 1) var air_mobility: float = 0.8
-export var jump_forgiveness: float = 0.1
+#export var jump_forgiveness: float = 0.1
 
 export var max_slope_angle: float = 45
 
@@ -58,10 +58,7 @@ func _set_on_ground(val: bool) -> void:
         velocity.x += floor_velocity.x
         floor_velocity = Vector2()
     else:
-        if not dead:
-            hit = false
-        else:
-            get_tree().reload_current_scene()
+        hit = false
 
     on_ground = val
 
@@ -270,5 +267,11 @@ func _on_Hurtbox_take_damage(dir) -> void:
     velocity = Vector2(-dir * move_speed / 2, jump_speed * 0.66)
 
 
-func _on_Hurtbox_die() -> void:
+func _die() -> void:
+    if not dead:
+        $RespawnTimer.start()
     dead = true
+
+
+func _on_RespawnTimer_timeout() -> void:
+    get_tree().reload_current_scene()

@@ -1,4 +1,4 @@
-extends KinematicBody2D
+extends TileMap
 
 export var movement: Vector2 = Vector2(0, -300)
 export var time: float = 2

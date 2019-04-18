@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=2]
+
+[sub_resource type="GDScript" id=3]
+script/source = "extends Area2D
+
+export var next_level: PackedScene
+
+func _on_LevelTarget_body_entered(body: PhysicsBody2D) -> void:
+    if body and body.name == \"player\":
+        if next_level:
+            get_tree().change_scene(next_level.resource_path)
+        else:
+            get_tree().reload_current_scene()"
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 32, 32 )
+
+[node name="LevelTarget" type="Area2D"]
+script = SubResource( 3 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 2 )
+
+[connection signal="body_entered" from="." to="." method="_on_LevelTarget_body_entered"]

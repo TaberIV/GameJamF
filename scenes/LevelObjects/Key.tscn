@@ -1,0 +1,49 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://assets/art/tilesheet_complete_2X.png" type="Texture" id=1]
+[ext_resource path="res://assets/sound/key.ogg" type="AudioStream" id=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Area2D
+
+signal picked_up
+
+var collected = false
+
+func _on_Key_body_entered(body: PhysicsBody2D) -> void:
+    if not collected and body and body.name == \"player\":
+        collected = true
+        emit_signal(\"picked_up\")
+        
+        $KeySprite.visible = false
+        $PickupSound.play()"
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 16, 16 )
+
+[node name="Key" type="Area2D"]
+script = SubResource( 1 )
+
+[node name="KeySprite" type="Sprite" parent="."]
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 1664, 384, 128, 128 )
+
+[node name="Outline" type="Sprite" parent="."]
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 1536, 512, 128, 128 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 32, 32 )
+shape = SubResource( 2 )
+
+[node name="PickupSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 2 )
+volume_db = -10.0
+
+[connection signal="body_entered" from="." to="." method="_on_Key_body_entered"]

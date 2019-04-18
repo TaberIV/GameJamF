@@ -13,9 +13,15 @@ _global_script_classes=[ {
 "class": "CharacterController",
 "language": "GDScript",
 "path": "res://CharacterController.gd"
+}, {
+"base": "Area2D",
+"class": "Hitbox",
+"language": "GDScript",
+"path": "res://scenes/Hitbox.tres.gd"
 } ]
 _global_script_class_icons={
-"CharacterController": ""
+"CharacterController": "",
+"Hitbox": ""
 }
 
 [application]
@@ -64,4 +70,5 @@ shoot={
 
 [rendering]
 
+quality/2d/use_pixel_snap=true
 environment/default_environment="res://default_env.tres"

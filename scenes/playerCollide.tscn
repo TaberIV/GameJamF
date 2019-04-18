@@ -1,30 +1,32 @@
-[gd_scene load_steps=30 format=2]
+[gd_scene load_steps=34 format=2]
 
 [ext_resource path="res://CharacterController.gd" type="Script" id=1]
 [ext_resource path="res://assets/art/player/playerBlue_walk1.png" type="Texture" id=2]
-[ext_resource path="res://assets/art/player/playerBlue_walk2.png" type="Texture" id=3]
-[ext_resource path="res://assets/art/player/playerBlue_walk3.png" type="Texture" id=4]
-[ext_resource path="res://assets/art/player/playerBlue_walk4.png" type="Texture" id=5]
-[ext_resource path="res://assets/art/player/playerBlue_duck.png" type="Texture" id=6]
-[ext_resource path="res://assets/sound/shoot.wav" type="AudioStream" id=7]
-[ext_resource path="res://assets/sound/shot_charged.wav" type="AudioStream" id=8]
-[ext_resource path="res://assets/art/SparkEffect/frame0000.png" type="Texture" id=9]
-[ext_resource path="res://assets/art/SparkEffect/frame0001.png" type="Texture" id=10]
-[ext_resource path="res://assets/art/SparkEffect/frame0002.png" type="Texture" id=11]
-[ext_resource path="res://assets/art/SparkEffect/frame0003.png" type="Texture" id=12]
-[ext_resource path="res://assets/art/SparkEffect/frame0004.png" type="Texture" id=13]
-[ext_resource path="res://assets/art/SparkEffect/frame0005.png" type="Texture" id=14]
-[ext_resource path="res://assets/art/SparkEffect/frame0006.png" type="Texture" id=15]
-[ext_resource path="res://assets/art/SparkEffect/frame0007.png" type="Texture" id=16]
-[ext_resource path="res://assets/art/SparkEffect/frame0008.png" type="Texture" id=17]
-[ext_resource path="res://assets/art/SparkEffect/frame0009.png" type="Texture" id=18]
-[ext_resource path="res://assets/art/SparkEffect/frame0010.png" type="Texture" id=19]
-[ext_resource path="res://assets/art/SparkEffect/frame0011.png" type="Texture" id=20]
-[ext_resource path="res://assets/art/SparkEffect/frame0012.png" type="Texture" id=21]
-[ext_resource path="res://assets/art/SparkEffect/frame0013.png" type="Texture" id=22]
-[ext_resource path="res://assets/art/SparkEffect/frame0014.png" type="Texture" id=23]
-[ext_resource path="res://assets/art/SparkEffect/frame0015.png" type="Texture" id=24]
-[ext_resource path="res://assets/sound/jump.wav" type="AudioStream" id=25]
+[ext_resource path="res://assets/art/player/playerBlue_walk3.png" type="Texture" id=3]
+[ext_resource path="res://assets/art/player/playerBlue_walk4.png" type="Texture" id=4]
+[ext_resource path="res://assets/art/player/playerBlue_duck.png" type="Texture" id=5]
+[ext_resource path="res://assets/art/player/playerBlue_hit.png" type="Texture" id=6]
+[ext_resource path="res://assets/art/player/playerBlue_dead.png" type="Texture" id=7]
+[ext_resource path="res://assets/art/player/playerBlue_walk2.png" type="Texture" id=8]
+[ext_resource path="res://assets/sound/shoot.wav" type="AudioStream" id=9]
+[ext_resource path="res://assets/sound/shot_charged.wav" type="AudioStream" id=10]
+[ext_resource path="res://assets/art/SparkEffect/frame0000.png" type="Texture" id=11]
+[ext_resource path="res://assets/art/SparkEffect/frame0001.png" type="Texture" id=12]
+[ext_resource path="res://assets/art/SparkEffect/frame0002.png" type="Texture" id=13]
+[ext_resource path="res://assets/art/SparkEffect/frame0003.png" type="Texture" id=14]
+[ext_resource path="res://assets/art/SparkEffect/frame0004.png" type="Texture" id=15]
+[ext_resource path="res://assets/art/SparkEffect/frame0005.png" type="Texture" id=16]
+[ext_resource path="res://assets/art/SparkEffect/frame0006.png" type="Texture" id=17]
+[ext_resource path="res://assets/art/SparkEffect/frame0007.png" type="Texture" id=18]
+[ext_resource path="res://assets/art/SparkEffect/frame0008.png" type="Texture" id=19]
+[ext_resource path="res://assets/art/SparkEffect/frame0009.png" type="Texture" id=20]
+[ext_resource path="res://assets/art/SparkEffect/frame0010.png" type="Texture" id=21]
+[ext_resource path="res://assets/art/SparkEffect/frame0011.png" type="Texture" id=22]
+[ext_resource path="res://assets/art/SparkEffect/frame0012.png" type="Texture" id=23]
+[ext_resource path="res://assets/art/SparkEffect/frame0013.png" type="Texture" id=24]
+[ext_resource path="res://assets/art/SparkEffect/frame0014.png" type="Texture" id=25]
+[ext_resource path="res://assets/art/SparkEffect/frame0015.png" type="Texture" id=26]
+[ext_resource path="res://assets/sound/jump.wav" type="AudioStream" id=27]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -33,24 +35,34 @@ animations = [ {
 "name": "idle",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 3 ) ],
-"loop": true,
-"name": "walk",
+"frames": [ ExtResource( 3 ), ExtResource( 4 ), ExtResource( 5 ) ],
+"loop": false,
+"name": "duck",
 "speed": 15.0
 }, {
-"frames": [ ExtResource( 4 ), ExtResource( 5 ) ],
+"frames": [ ExtResource( 6 ) ],
+"loop": true,
+"name": "hit",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 3 ), ExtResource( 4 ) ],
 "loop": false,
 "name": "fall",
 "speed": 10.0
 }, {
-"frames": [ ExtResource( 4 ), ExtResource( 5 ), ExtResource( 6 ) ],
-"loop": false,
-"name": "duck",
+"frames": [ ExtResource( 7 ) ],
+"loop": true,
+"name": "dead",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 2 ), ExtResource( 8 ), ExtResource( 3 ), ExtResource( 3 ), ExtResource( 8 ) ],
+"loop": true,
+"name": "walk",
 "speed": 15.0
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 8.15434, 26.8801 )
+extents = Vector2( 8, 27 )
 
 [sub_resource type="GDScript" id=3]
 script/source = "extends Node2D
@@ -203,11 +215,48 @@ animations = [ {
 "name": "default",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 9 ), ExtResource( 10 ), ExtResource( 11 ), ExtResource( 12 ), ExtResource( 13 ), ExtResource( 14 ), ExtResource( 15 ), ExtResource( 16 ), ExtResource( 17 ), ExtResource( 18 ), ExtResource( 19 ), ExtResource( 20 ), ExtResource( 21 ), ExtResource( 22 ), ExtResource( 23 ), ExtResource( 24 ) ],
+"frames": [ ExtResource( 11 ), ExtResource( 12 ), ExtResource( 13 ), ExtResource( 14 ), ExtResource( 15 ), ExtResource( 16 ), ExtResource( 17 ), ExtResource( 18 ), ExtResource( 19 ), ExtResource( 20 ), ExtResource( 21 ), ExtResource( 22 ), ExtResource( 23 ), ExtResource( 24 ), ExtResource( 25 ), ExtResource( 26 ) ],
 "loop": false,
 "name": "active",
 "speed": 60.0
 } ]
+
+[sub_resource type="GDScript" id=6]
+script/source = "extends Area2D
+
+signal take_damage(dir)
+signal die
+
+export var max_health: float = 100
+export var faction: String = \"player\"
+
+# Health state
+var health: float
+
+# References
+var hurtbox: Area2D
+
+
+func _ready() -> void:
+    health = max_health
+
+
+func _on_Hurtbox_area_entered(hit: Hitbox) -> void:
+    if get_parent().hit:
+        return
+    if hit:
+        if hit.faction != faction:
+            health = max(health - hit.damage, 0)
+            
+            if health == 0:
+                emit_signal(\"die\")
+            var dir = 1 if hit.global_position.x > global_position.x else -1
+            emit_signal(\"take_damage\", dir)
+    else:
+        pass"
+
+[sub_resource type="RectangleShape2D" id=7]
+extents = Vector2( 20, 27 )
 
 [node name="player" type="KinematicBody2D"]
 collision/safe_margin = 0.01
@@ -218,7 +267,6 @@ frames = SubResource( 1 )
 animation = "idle"
 
 [node name="BodyCollider" type="CollisionShape2D" parent="."]
-position = Vector2( 0, -0.158424 )
 shape = SubResource( 2 )
 
 [node name="BulletSpawn" type="Node2D" parent="."]
@@ -226,16 +274,16 @@ position = Vector2( 15, -5 )
 script = SubResource( 3 )
 
 [node name="Shoot" type="AudioStreamPlayer" parent="BulletSpawn"]
-stream = ExtResource( 7 )
+stream = ExtResource( 9 )
 volume_db = -15.0
 
 [node name="ShootCharged" type="AudioStreamPlayer" parent="BulletSpawn"]
-stream = ExtResource( 7 )
+stream = ExtResource( 9 )
 volume_db = -15.0
 pitch_scale = 0.75
 
 [node name="ShotCharged" type="AudioStreamPlayer" parent="BulletSpawn"]
-stream = ExtResource( 8 )
+stream = ExtResource( 10 )
 volume_db = -15.0
 
 [node name="ChargeEffect" type="AnimatedSprite" parent="BulletSpawn"]
@@ -244,8 +292,18 @@ frames = SubResource( 4 )
 animation = "active"
 
 [node name="JumpSound" type="AudioStreamPlayer" parent="."]
-stream = ExtResource( 25 )
+stream = ExtResource( 27 )
 volume_db = -25.0
 pitch_scale = 1.5
 
+[node name="Hurtbox" type="Area2D" parent="."]
+visible = false
+script = SubResource( 6 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource( 7 )
+
 [connection signal="animation_finished" from="BulletSpawn/ChargeEffect" to="BulletSpawn" method="_on_ChargeEffect_animation_finished"]
+[connection signal="area_entered" from="Hurtbox" to="Hurtbox" method="_on_Hurtbox_area_entered"]
+[connection signal="die" from="Hurtbox" to="." method="_on_Hurtbox_die"]
+[connection signal="take_damage" from="Hurtbox" to="." method="_on_Hurtbox_take_damage"]

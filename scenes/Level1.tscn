@@ -1,0 +1,36 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://assets/tilesets/green.tres" type="TileSet" id=1]
+[ext_resource path="res://scenes/playerCollide.tscn" type="PackedScene" id=2]
+
+[node name="Level1" type="Node2D"]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+margin_right = 1024.0
+margin_bottom = 640.0
+color = Color( 0, 0.811765, 0.811765, 1 )
+
+[node name="Background" type="TileMap" parent="."]
+scale = Vector2( 0.5, 0.5 )
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 128, 128 )
+format = 1
+tile_data = PoolIntArray( 327690, 31, 0, 327691, 32, 0, 327692, 32, 0, 327693, 36, 0, 327694, 32, 0, 393225, 28, 0, 458753, 32, 0, 458754, 32, 0, 458755, 32, 0, 458756, 32, 0, 458757, 32, 0, 458758, 32, 0, 458759, 32, 0, 458760, 32, 0 )
+
+[node name="Level" type="TileMap" parent="."]
+scale = Vector2( 0.5, 0.5 )
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 128, 128 )
+format = 1
+tile_data = PoolIntArray( 15, 1, 0, 65551, 2, 0, 131072, 10, 0, 131087, 1, 0, 196608, 1, 0, 196623, 2, 0, 262144, 2, 0, 262151, 11, 0, 262152, 12, 0, 262159, 1, 0, 327680, 1, 0, 327695, 2, 0, 393216, 2, 0, 393225, 17, 0, 393226, 8, 0, 393227, 8, 0, 393228, 8, 0, 393229, 8, 0, 393230, 8, 0, 393231, 1, 0, 458752, 1, 0, 458760, 17, 0, 458761, 18, 0, 458762, 0, 0, 458763, 0, 0, 458764, 0, 0, 458765, 0, 0, 458766, 0, 0, 458767, 2, 0, 524288, 3, 0, 524289, 8, 0, 524290, 8, 0, 524291, 8, 0, 524292, 8, 0, 524293, 8, 0, 524294, 8, 0, 524295, 8, 0, 524296, 18, 0, 524297, 0, 0, 524298, 0, 0, 524299, 0, 0, 524300, 0, 0, 524301, 0, 0, 524302, 0, 0, 524303, 0, 0, 589824, 0, 0, 589825, 0, 0, 589826, 0, 0, 589827, 0, 0, 589828, 0, 0, 589829, 0, 0, 589830, 0, 0, 589831, 0, 0, 589832, 0, 0, 589833, 0, 0, 589834, 0, 0, 589835, 0, 0, 589836, 0, 0, 589837, 0, 0, 589838, 0, 0, 589839, 0, 0 )
+
+[node name="player" parent="." instance=ExtResource( 2 )]
+position = Vector2( 152.5, 480 )
+
+[node name="Foreground" type="TileMap" parent="."]
+scale = Vector2( 0.5, 0.5 )
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 128, 128 )
+format = 1
+tile_data = PoolIntArray( 196615, 30, 0, 327691, 26, 0, 458755, 25, 0 )
+

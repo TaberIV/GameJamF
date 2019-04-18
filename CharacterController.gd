@@ -37,6 +37,8 @@ var velocity: Vector2 = Vector2()
 var fast_fall: bool = false
 
 var dir: int = 1
+var hit: bool = false
+var dead: bool = false
 
 # Collision info
 var colY: KinematicCollision2D
@@ -55,6 +57,11 @@ func _set_on_ground(val: bool) -> void:
     if not val:
         velocity.x += floor_velocity.x
         floor_velocity = Vector2()
+    else:
+        if not dead:
+            hit = false
+        else:
+            get_tree().reload_current_scene()
 
     on_ground = val
 
@@ -83,8 +90,11 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-    _get_input()
-
+    if not hit and not dead:
+        _get_input()
+    else:
+        _zero_input()
+    
     _movement(delta)
     
     _set_anim()
@@ -94,7 +104,7 @@ func _get_input() -> void:
     # Duck input
     d_input = Input.is_action_pressed("duck")
     if not d_input:
-        d_input = Input.get_joy_axis(0, JOY_ANALOG_LY) > 0
+        d_input = Input.get_joy_axis(0, JOY_ANALOG_LY) > 0.5
     
     # Movement Input
     h_input = 0
@@ -105,7 +115,8 @@ func _get_input() -> void:
         h_input += 1
  
     if h_input == 0:
-        h_input = Input.get_joy_axis(0, JOY_ANALOG_LX)
+        var stick = Input.get_joy_axis(0, JOY_ANALOG_LX)
+        h_input = sign(stick) if abs(stick) > 0.5 else 0
     
     # Jump Input
     jump_pressed = Input.is_action_just_pressed("jump")
@@ -113,6 +124,15 @@ func _get_input() -> void:
     
     if velocity.y < 0 and not jump:
         fast_fall = true
+
+
+func _zero_input() -> void:
+    h_input = 0
+    d_input = false
+    
+    jump = false
+    jump_pressed = false
+    jump_timer = 0
 
 
 func _movement(delta: float) -> void:
@@ -146,7 +166,7 @@ func _movement(delta: float) -> void:
         velocity.y = jump_speed
         jump_timer = 0
         jump_sound.play()
-    jump_timer -= delta
+    jump_timer = max(jump_timer - delta, 0)
     
     # Gravity
     var gravity_force = gravity * delta
@@ -157,7 +177,7 @@ func _movement(delta: float) -> void:
         
     velocity.y += gravity_force
         
-    velocity.y = min(velocity.y, abs(jump_speed))
+    velocity.y = min(velocity.y, abs(jump_speed * 2))
 
     # Move and collide
     colY = move_and_collide(Vector2(0, velocity.y) * delta)
@@ -186,8 +206,6 @@ func _handle_collisions(delta: float) -> void:
             velocity.y = max(floor_velocity.y, 0)
             if not was_on_ground:
                 velocity.x -= floor_velocity.x
-                
-            jump_timer = jump_forgiveness
     else:
         self.on_ground = false
 
@@ -208,12 +226,11 @@ func _handle_collisions(delta: float) -> void:
 
                 # Check for popping above slope
                 _check_stick(-y_off)
-                
         # Check if walked off ledge/down slope
-        elif on_ground and not test_move(transform, Vector2(0, 1)):
-            # Stick moving down slopes
+        elif on_ground and not test_move(transform, Vector2(0, 0.1)):
             var slope_desc = abs(velocity.x) * delta / max_slope_normal.y
             _check_stick(slope_desc)
+            
 
 
 func _check_stick(stick: float) -> void:
@@ -232,7 +249,11 @@ func _set_anim() -> void:
         sprite.flip_h = dir < 0
     
     sprite.offset = Vector2(0, 0)    
-    if not on_ground:
+    if dead:
+        sprite.play("dead")
+    elif hit:
+        sprite.play("hit")
+    elif not on_ground:
         sprite.play("fall")
     elif abs(velocity.x) > 0:
         sprite.play("walk")
@@ -242,3 +263,12 @@ func _set_anim() -> void:
     else:
         sprite.play("idle")
 
+
+# Signal Callbacks
+func _on_Hurtbox_take_damage(dir) -> void:
+    hit = true
+    velocity = Vector2(-dir * move_speed / 2, jump_speed * 0.66)
+
+
+func _on_Hurtbox_die() -> void:
+    dead = true

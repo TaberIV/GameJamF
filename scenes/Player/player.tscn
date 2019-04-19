@@ -235,12 +235,12 @@ animations = [ {
 "speed": 60.0
 } ]
 
-[sub_resource type="GDScript" id=7]
+[sub_resource type="GDScript" id=5]
 script/source = "extends Area2D
 
 "
 
-[sub_resource type="RectangleShape2D" id=8]
+[sub_resource type="RectangleShape2D" id=6]
 extents = Vector2( 5.10806, 19.9217 )
 
 [node name="player" type="KinematicBody2D"]
@@ -278,13 +278,14 @@ frames = SubResource( 4 )
 animation = "active"
 
 [node name="Hurtbox" parent="." instance=ExtResource( 27 )]
+scale = Vector2( 1.16, 1.06 )
 
 [node name="StuckChecker" type="Area2D" parent="."]
 editor/display_folded = true
-script = SubResource( 7 )
+script = SubResource( 5 )
 
 [node name="BodyCollider2" type="CollisionShape2D" parent="StuckChecker"]
-shape = SubResource( 8 )
+shape = SubResource( 6 )
 
 [node name="JumpSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 28 )

@@ -6,18 +6,31 @@
 script/source = "extends Node2D
 
 export var velocity: Vector2 = Vector2(750, 0)
+export var distance: float = 500
+
+var traveled: float = 0
 
 func _ready() -> void:
     $VisibilityNotifier2D.connect(\"screen_exited\", self, \"_on_screen_exit\")
 
 func _process(delta: float) -> void:
     position += velocity * delta
+    traveled += velocity.x * delta
+    
+    if traveled >= distance:
+        queue_free()
     
 func _on_screen_exit() -> void:
-    queue_free()"
+    queue_free()
+
+func _on_Hitbox_area_entered(hurtbox: Hurtbox) -> void:
+    if hurtbox and hurtbox.faction != $Hitbox.faction:
+        queue_free()
+"
 
 [node name="Bullet" type="Node2D"]
 script = SubResource( 1 )
+distance = 400.0
 
 [node name="ColorRect2" type="ColorRect" parent="."]
 margin_left = -4.0
@@ -42,3 +55,4 @@ rect = Rect2( -5, -5, 10, 10 )
 scale = Vector2( 0.25, 0.25 )
 damage = 10.0
 
+[connection signal="area_entered" from="Hitbox" to="." method="_on_Hitbox_area_entered"]

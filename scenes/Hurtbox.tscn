@@ -1,50 +1,19 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://assets/sound/hit3.ogg" type="AudioStream" id=1]
-
-[sub_resource type="GDScript" id=1]
-script/source = "extends Area2D
-
-class_name Hurtbox
-
-signal take_damage(dir)
-signal die
-
-export var max_health: float = 100
-export var faction: String = \"player\"
-
-# Health state
-var health: float
-
-
-func _ready() -> void:
-    health = max_health
-
-
-func _on_Hurtbox_area_entered(hit: Hitbox) -> void:
-    if get_parent().hit:
-        return
-    if hit:
-        if hit.faction != faction:
-            health = max(health - hit.damage, 0)
-            
-            if health == 0:
-                emit_signal(\"die\")
-            var dir = 1 if hit.global_position.x > global_position.x else -1
-            emit_signal(\"take_damage\", dir)
-            $HitSound.play()"
+[ext_resource path="res://scenes/Hurtbox.gd" type="Script" id=1]
+[ext_resource path="res://assets/sound/hit3.ogg" type="AudioStream" id=2]
 
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 20, 27 )
 
 [node name="Hurtbox" type="Area2D"]
-script = SubResource( 1 )
+script = ExtResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 2 )
 
 [node name="HitSound" type="AudioStreamPlayer" parent="."]
-stream = ExtResource( 1 )
+stream = ExtResource( 2 )
 volume_db = -10.0
 pitch_scale = 0.8
 

@@ -21,6 +21,8 @@ format = 1
 scale = Vector2( 0.5, 0.5 )
 tile_set = ExtResource( 1 )
 cell_size = Vector2( 128, 128 )
+collision_layer = 3
+collision_mask = 3
 format = 1
 
 [node name="PlayerSpawn" parent="." instance=ExtResource( 2 )]

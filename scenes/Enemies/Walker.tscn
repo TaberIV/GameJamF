@@ -1,33 +1,103 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=10 format=2]
 
-[ext_resource path="res://scenes/LevelObjects/moving_platform.gd" type="Script" id=1]
-[ext_resource path="res://assets/art/enemies/walker/enemyWalking_1.png" type="Texture" id=2]
-[ext_resource path="res://assets/art/enemies/walker/enemyWalking_2.png" type="Texture" id=3]
-[ext_resource path="res://scenes/Hitbox.tscn" type="PackedScene" id=4]
-[ext_resource path="res://scenes/Hurtbox.tscn" type="PackedScene" id=5]
+[ext_resource path="res://assets/art/enemies/walker/enemyWalking_3.png" type="Texture" id=1]
+[ext_resource path="res://assets/art/enemies/walker/enemyWalking_4.png" type="Texture" id=2]
+[ext_resource path="res://assets/art/enemies/walker/enemyWalking_1.png" type="Texture" id=3]
+[ext_resource path="res://assets/art/enemies/walker/enemyWalking_2.png" type="Texture" id=4]
+[ext_resource path="res://scenes/Hitbox.tscn" type="PackedScene" id=5]
+[ext_resource path="res://scenes/Hurtbox.tscn" type="PackedScene" id=6]
 
-[sub_resource type="SpriteFrames" id=1]
+[sub_resource type="GDScript" id=4]
+script/source = "extends KinematicBody2D
+
+export var walk_speed: float = 250
+export var gravity: float = 1875
+export(int, -1, 1, 2) var dir: int = 1
+
+var velocity: Vector2 = Vector2()
+
+var hit = false
+var dead = false
+
+func _physics_process(delta: float) -> void:
+    if not dead:
+        velocity.x = walk_speed * dir
+    velocity.y += gravity * delta
+    
+    var colX = move_and_collide(Vector2(velocity.x * delta, 0))
+    var colY = move_and_collide(Vector2(0, velocity.y * delta))
+    
+    if colY:
+        velocity.y = 0
+        
+        if dead:
+            queue_free()
+    if colX:
+        dir *= -1
+    
+
+func _on_Hurtbox_area_entered(hitbox: Hitbox) -> void:
+    if hitbox and hitbox.faction == $Hitbox.faction:
+        dir *= -1
+
+
+func _on_Hurtbox_die() -> void:
+    dead = true
+    velocity = Vector2(0, -500)
+    
+    $AnimatedSprite.play(\"dead\")
+    get_node(\"Hurtbox/CollisionShape2D\").set_deferred(\"disabled\", true)
+    get_node(\"Hitbox/CollisionShape2D\").set_deferred(\"disabled\", true)
+    
+
+func _on_Hitbox_area_entered(hurtbox: Hurtbox) -> void:
+    if hurtbox and hurtbox.faction != $Hurtbox.faction:
+        dir *= -1
+"
+
+[sub_resource type="SpriteFrames" id=5]
 animations = [ {
-"frames": [ ExtResource( 2 ), ExtResource( 3 ) ],
+"frames": [ ExtResource( 1 ) ],
+"loop": true,
+"name": "jump",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 2 ) ],
+"loop": true,
+"name": "dead",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 3 ), ExtResource( 4 ) ],
 "loop": true,
 "name": "walk",
 "speed": 5.0
 } ]
 
-[sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 14.9196, 22.7044 )
+[sub_resource type="RectangleShape2D" id=6]
+extents = Vector2( 14.9196, 22.1891 )
 
 [node name="Walker" type="KinematicBody2D"]
-script = ExtResource( 1 )
+collision_layer = 2
+collision_mask = 0
+script = SubResource( 4 )
+walk_speed = 150.0
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
-frames = SubResource( 1 )
+frames = SubResource( 5 )
 animation = "walk"
 
-[node name="Hitbox" parent="." instance=ExtResource( 4 )]
+[node name="Hitbox" parent="." instance=ExtResource( 5 )]
+scale = Vector2( 1.3, 1.72 )
+faction = "hazard"
+damage = 35.0
 
-[node name="Hurtbox" parent="." instance=ExtResource( 5 )]
+[node name="Hurtbox" parent="." instance=ExtResource( 6 )]
+max_health = 30.0
+faction = "hazard"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource( 2 )
+shape = SubResource( 6 )
 
+[connection signal="area_entered" from="Hitbox" to="." method="_on_Hitbox_area_entered"]
+[connection signal="area_entered" from="Hurtbox" to="." method="_on_Hurtbox_area_entered"]
+[connection signal="die" from="Hurtbox" to="." method="_on_Hurtbox_die"]

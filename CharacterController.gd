@@ -1,5 +1,7 @@
 extends KinematicBody2D
 
+signal death
+
 class_name CharacterController
 
 # Editor Parameters
@@ -280,4 +282,5 @@ func _on_VisibilityNotifier2D_screen_exited() -> void:
 
 
 func _on_RespawnTimer_timeout() -> void:
+    emit_signal("death")
     queue_free()

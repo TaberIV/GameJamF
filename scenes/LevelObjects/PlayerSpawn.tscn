@@ -6,6 +6,7 @@
 script/source = "extends Node2D
 
 export var player = preload(\"res://scenes/Player/player.tscn\")
+export var reset_on_death = true
 
 var level: Node
 var terrain: Node
@@ -23,7 +24,13 @@ func _create_player():
     level.call_deferred(\"add_child_below_node\", self, player_instance)
     
     # Connect to player death
-    player_instance.connect(\"tree_exited\", self, \"_create_player\")"
+    if reset_on_death:
+        player_instance.connect(\"death\", self, \"_restart_scene\")        
+    else:
+        player_instance.connect(\"death\", self, \"_create_player\")
+    
+func _restart_scene():
+    get_tree().reload_current_scene()"
 
 [node name="PlayerSpawn" type="Node2D"]
 script = SubResource( 1 )

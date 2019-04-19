@@ -18,10 +18,16 @@ _global_script_classes=[ {
 "class": "Hitbox",
 "language": "GDScript",
 "path": "res://scenes/Hitbox.gd"
+}, {
+"base": "Area2D",
+"class": "Hurtbox",
+"language": "GDScript",
+"path": "res://scenes/Hurtbox.gd"
 } ]
 _global_script_class_icons={
 "CharacterController": "",
-"Hitbox": ""
+"Hitbox": "",
+"Hurtbox": ""
 }
 
 [application]

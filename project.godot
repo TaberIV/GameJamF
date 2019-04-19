@@ -17,7 +17,7 @@ _global_script_classes=[ {
 "base": "Area2D",
 "class": "Hitbox",
 "language": "GDScript",
-"path": "res://scenes/Hitbox.tres.gd"
+"path": "res://scenes/Hitbox.gd"
 } ]
 _global_script_class_icons={
 "CharacterController": "",

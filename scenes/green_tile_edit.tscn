@@ -198,6 +198,7 @@ region_rect = Rect2( 1024, 1280, 128, 128 )
 polygon = PoolVector2Array( 0, 0, 96, 0, 128, 16, 128, 64, 112, 96, 80, 112, 32, 128, 0, 128 )
 
 [node name="PlatformL" type="Sprite" parent="."]
+editor/display_folded = true
 position = Vector2( 0, 128 )
 texture = ExtResource( 1 )
 centered = false
@@ -236,6 +237,7 @@ region_rect = Rect2( 896, 1152, 128, 128 )
 polygon = PoolVector2Array( 0, 0, 128, 0, 128, 96, 0, 96 )
 
 [node name="Platform1" type="Sprite" parent="."]
+editor/display_folded = true
 position = Vector2( 384, 128 )
 texture = ExtResource( 1 )
 centered = false
@@ -421,44 +423,128 @@ region_enabled = true
 region_rect = Rect2( 1408, 896, 128, 128 )
 
 [node name="FenceL" type="Sprite" parent="."]
-position = Vector2( 384, 528 )
+position = Vector2( 384, 508.8 )
 texture = ExtResource( 1 )
 centered = false
 region_enabled = true
 region_rect = Rect2( 1152, 1152, 128, 128 )
 
 [node name="Fence" type="Sprite" parent="."]
-position = Vector2( 512, 528 )
+position = Vector2( 512, 508.8 )
 texture = ExtResource( 1 )
 centered = false
 region_enabled = true
 region_rect = Rect2( 1280, 1152, 128, 128 )
 
 [node name="FenceR" type="Sprite" parent="."]
-position = Vector2( 638, 528 )
+position = Vector2( 638, 508.8 )
 texture = ExtResource( 1 )
 centered = false
 region_enabled = true
 region_rect = Rect2( 1408, 1152, 128, 128 )
 
 [node name="FenceE" type="Sprite" parent="."]
-position = Vector2( 384, 656 )
+position = Vector2( 384, 636.8 )
 texture = ExtResource( 1 )
 centered = false
 region_enabled = true
 region_rect = Rect2( 1152, 1024, 128, 128 )
 
 [node name="FenceGate" type="Sprite" parent="."]
-position = Vector2( 512, 656 )
+position = Vector2( 512, 636.8 )
 texture = ExtResource( 1 )
 centered = false
 region_enabled = true
 region_rect = Rect2( 1280, 1024, 128, 128 )
 
 [node name="FenceBroken" type="Sprite" parent="."]
-position = Vector2( 640, 656 )
+position = Vector2( 640, 636.8 )
 texture = ExtResource( 1 )
 centered = false
 region_enabled = true
 region_rect = Rect2( 1408, 1024, 128, 128 )
+
+[node name="SignR" type="Sprite" parent="."]
+position = Vector2( 0, 768 )
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 2048, 1280, 128, 128 )
+
+[node name="SignL" type="Sprite" parent="."]
+position = Vector2( 128, 768 )
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 2176, 1280, 128, 128 )
+
+[node name="SignU" type="Sprite" parent="."]
+position = Vector2( 0, 896 )
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 2048, 1408, 128, 128 )
+
+[node name="SignD" type="Sprite" parent="."]
+position = Vector2( 128, 896 )
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 2176, 1408, 128, 128 )
+
+[node name="SignUL" type="Sprite" parent="."]
+position = Vector2( 256, 768 )
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 2304, 1280, 128, 128 )
+
+[node name="SignUR" type="Sprite" parent="."]
+position = Vector2( 384, 768 )
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 2432, 1280, 128, 128 )
+
+[node name="SignDL" type="Sprite" parent="."]
+position = Vector2( 256, 896 )
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 2304, 1408, 128, 128 )
+
+[node name="SignDR" type="Sprite" parent="."]
+position = Vector2( 384, 896 )
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 2432, 1408, 128, 128 )
+
+[node name="Sign" type="Sprite" parent="."]
+position = Vector2( 512, 768 )
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 2688, 1408, 128, 128 )
+
+[node name="SignBig" type="Sprite" parent="."]
+position = Vector2( 640, 768 )
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 2688, 1280, 128, 128 )
+
+[node name="SignPost" type="Sprite" parent="."]
+position = Vector2( 512, 896 )
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 2560, 1280, 128, 128 )
+
+[node name="SignR2" type="Sprite" parent="."]
+position = Vector2( 640, 896 )
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 2560, 1408, 128, 128 )
 

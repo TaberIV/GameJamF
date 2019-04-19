@@ -1,6 +1,6 @@
 extends TileMap
 
-export var movement: Vector2 = Vector2(0, -300)
+export var movement: Vector2 = Vector2(0, 0)
 export var time: float = 2
 
 var start: Vector2;

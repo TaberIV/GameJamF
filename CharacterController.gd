@@ -63,6 +63,7 @@ func _set_on_ground(val: bool) -> void:
     on_ground = val
 
 
+#
 func _ready() -> void:
     # Set constants
     if accel_time == 0:
@@ -273,5 +274,10 @@ func _die() -> void:
     dead = true
 
 
+func _on_VisibilityNotifier2D_screen_exited() -> void:
+    $FallSound.play()
+    $RespawnTimer.start()
+
+
 func _on_RespawnTimer_timeout() -> void:
-    get_tree().reload_current_scene()
+    queue_free()

@@ -1,12 +1,12 @@
-[gd_scene load_steps=37 format=2]
+[gd_scene load_steps=36 format=2]
 
 [ext_resource path="res://CharacterController.gd" type="Script" id=1]
 [ext_resource path="res://assets/art/player/playerBlue_walk1.png" type="Texture" id=2]
 [ext_resource path="res://assets/art/player/playerBlue_hit.png" type="Texture" id=3]
 [ext_resource path="res://assets/art/player/playerBlue_dead.png" type="Texture" id=4]
-[ext_resource path="res://assets/art/player/playerBlue_walk2.png" type="Texture" id=5]
-[ext_resource path="res://assets/art/player/playerBlue_walk3.png" type="Texture" id=6]
-[ext_resource path="res://assets/art/player/playerBlue_walk4.png" type="Texture" id=7]
+[ext_resource path="res://assets/art/player/playerBlue_walk3.png" type="Texture" id=5]
+[ext_resource path="res://assets/art/player/playerBlue_walk4.png" type="Texture" id=6]
+[ext_resource path="res://assets/art/player/playerBlue_walk2.png" type="Texture" id=7]
 [ext_resource path="res://assets/art/player/playerBlue_duck.png" type="Texture" id=8]
 [ext_resource path="res://assets/sound/shoot.wav" type="AudioStream" id=9]
 [ext_resource path="res://assets/sound/shot_charged.wav" type="AudioStream" id=10]
@@ -26,8 +26,9 @@
 [ext_resource path="res://assets/art/SparkEffect/frame0013.png" type="Texture" id=24]
 [ext_resource path="res://assets/art/SparkEffect/frame0014.png" type="Texture" id=25]
 [ext_resource path="res://assets/art/SparkEffect/frame0015.png" type="Texture" id=26]
-[ext_resource path="res://assets/sound/jump.wav" type="AudioStream" id=27]
-[ext_resource path="res://assets/sound/hit3.ogg" type="AudioStream" id=28]
+[ext_resource path="res://scenes/Hurtbox.tscn" type="PackedScene" id=27]
+[ext_resource path="res://assets/sound/jump.wav" type="AudioStream" id=28]
+[ext_resource path="res://assets/sound/lose3.ogg" type="AudioStream" id=29]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -46,20 +47,20 @@ animations = [ {
 "name": "dead",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 2 ), ExtResource( 5 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 5 ) ],
+"frames": [ ExtResource( 5 ), ExtResource( 6 ) ],
+"loop": false,
+"name": "fall",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( 2 ), ExtResource( 7 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 7 ) ],
 "loop": true,
 "name": "walk",
 "speed": 15.0
 }, {
-"frames": [ ExtResource( 6 ), ExtResource( 7 ), ExtResource( 8 ) ],
+"frames": [ ExtResource( 5 ), ExtResource( 6 ), ExtResource( 8 ) ],
 "loop": false,
 "name": "duck",
 "speed": 15.0
-}, {
-"frames": [ ExtResource( 6 ), ExtResource( 7 ) ],
-"loop": false,
-"name": "fall",
-"speed": 10.0
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
@@ -234,41 +235,6 @@ animations = [ {
 "speed": 60.0
 } ]
 
-[sub_resource type="GDScript" id=5]
-script/source = "extends Area2D
-
-class_name Hurtbox
-
-signal take_damage(dir)
-signal die
-
-export var max_health: float = 100
-export var faction: String = \"player\"
-
-# Health state
-var health: float
-
-
-func _ready() -> void:
-    health = max_health
-
-
-func _on_Hurtbox_area_entered(hit: Hitbox) -> void:
-    if get_parent().hit:
-        return
-    if hit:
-        if hit.faction != faction:
-            health = max(health - hit.damage, 0)
-            
-            if health == 0:
-                emit_signal(\"die\")
-            var dir = 1 if hit.global_position.x > global_position.x else -1
-            emit_signal(\"take_damage\", dir)
-            $HitSound.play()"
-
-[sub_resource type="RectangleShape2D" id=6]
-extents = Vector2( 20, 27 )
-
 [sub_resource type="GDScript" id=7]
 script/source = "extends Area2D
 
@@ -289,6 +255,7 @@ animation = "idle"
 shape = SubResource( 2 )
 
 [node name="BulletSpawn" type="Node2D" parent="."]
+editor/display_folded = true
 position = Vector2( 15, -5 )
 script = SubResource( 3 )
 
@@ -310,21 +277,7 @@ visible = false
 frames = SubResource( 4 )
 animation = "active"
 
-[node name="JumpSound" type="AudioStreamPlayer" parent="."]
-stream = ExtResource( 27 )
-volume_db = -25.0
-pitch_scale = 1.5
-
-[node name="Hurtbox" type="Area2D" parent="."]
-script = SubResource( 5 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
-shape = SubResource( 6 )
-
-[node name="HitSound" type="AudioStreamPlayer" parent="Hurtbox"]
-stream = ExtResource( 28 )
-volume_db = -10.0
-pitch_scale = 0.8
+[node name="Hurtbox" parent="." instance=ExtResource( 27 )]
 
 [node name="StuckChecker" type="Area2D" parent="."]
 editor/display_folded = true
@@ -333,8 +286,23 @@ script = SubResource( 7 )
 [node name="BodyCollider2" type="CollisionShape2D" parent="StuckChecker"]
 shape = SubResource( 8 )
 
+[node name="JumpSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 28 )
+volume_db = -25.0
+pitch_scale = 1.5
+
+[node name="FallSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 29 )
+volume_db = -10.0
+
 [node name="RespawnTimer" type="Timer" parent="."]
 
+[node name="VisibilityNotifier2D" type="VisibilityNotifier2D" parent="."]
+position = Vector2( -1.19209e-06, -4.76837e-07 )
+scale = Vector2( 2.25, 2.7 )
+
 [connection signal="animation_finished" from="BulletSpawn/ChargeEffect" to="BulletSpawn" method="_on_ChargeEffect_animation_finished"]
-[connection signal="area_entered" from="Hurtbox" to="Hurtbox" method="_on_Hurtbox_area_entered"]
+[connection signal="die" from="Hurtbox" to="." method="_die"]
+[connection signal="take_damage" from="Hurtbox" to="." method="_on_Hurtbox_take_damage"]
 [connection signal="timeout" from="RespawnTimer" to="." method="_on_RespawnTimer_timeout"]
+[connection signal="screen_exited" from="VisibilityNotifier2D" to="." method="_on_VisibilityNotifier2D_screen_exited"]

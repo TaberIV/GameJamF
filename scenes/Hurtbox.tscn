@@ -2,7 +2,7 @@
 
 [ext_resource path="res://assets/sound/hit3.ogg" type="AudioStream" id=1]
 
-[sub_resource type="GDScript" id=5]
+[sub_resource type="GDScript" id=1]
 script/source = "extends Area2D
 
 class_name Hurtbox
@@ -34,14 +34,14 @@ func _on_Hurtbox_area_entered(hit: Hitbox) -> void:
             emit_signal(\"take_damage\", dir)
             $HitSound.play()"
 
-[sub_resource type="RectangleShape2D" id=6]
+[sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 20, 27 )
 
 [node name="Hurtbox" type="Area2D"]
-script = SubResource( 5 )
+script = SubResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource( 6 )
+shape = SubResource( 2 )
 
 [node name="HitSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 1 )

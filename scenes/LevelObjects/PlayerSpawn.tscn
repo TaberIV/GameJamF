@@ -28,6 +28,7 @@ func _create_player():
         player_instance.connect(\"death\", self, \"_restart_scene\")        
     else:
         player_instance.connect(\"death\", self, \"_create_player\")
+       
     
 func _restart_scene():
     get_tree().reload_current_scene()"

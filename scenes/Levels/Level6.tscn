@@ -14,18 +14,20 @@
 
 [node name="ConveyorBeltSprite" parent="." index="2" instance=ExtResource( 2 )]
 position = Vector2( 704, 480 )
-frame = 2
 
 [node name="ConveyorBeltSprite2" parent="." index="3" instance=ExtResource( 3 )]
 position = Vector2( 836.729, 480 )
+frame = 1
 flip_h = false
 
 [node name="ConveyorBeltSprite3" parent="." index="4" instance=ExtResource( 3 )]
 position = Vector2( 772.856, 480 )
+frame = 1
 flip_h = false
 
 [node name="ConveyorBeltSprite4" parent="." index="5" instance=ExtResource( 3 )]
 position = Vector2( 900.602, 480 )
+frame = 1
 flip_h = false
 
 [node name="ConveyorBelt" parent="." index="6" instance=ExtResource( 4 )]
@@ -38,7 +40,7 @@ tile_data = PoolIntArray( 131072, 16, 0 )
 movement = Vector2( 0, 320 )
 
 [node name="Level" parent="." index="8"]
-tile_data = PoolIntArray( 65538, 11, 0, 65539, 8, 0, 65540, 8, 0, 65541, 8, 0, 65542, 8, 0, 65543, 8, 0, 65544, 8, 0, 65545, 8, 0, 65546, 12, 0, 65550, 11, 0, 262159, 1, 0, 327695, 1, 0, 393222, 11, 0, 393223, 12, 0, 393231, 1, 0, 458753, 7, 0, 458754, 9, 0, 458767, 1, 0, 524289, 2, 0, 524290, 1, 0, 524303, 1, 0 )
+tile_data = PoolIntArray( 65538, 11, 0, 65539, 8, 0, 65540, 8, 0, 65541, 8, 0, 65542, 8, 0, 65543, 8, 0, 65544, 8, 0, 65545, 8, 0, 65546, 12, 0, 65549, 11, 0, 65550, 8, 0, 262159, 1, 0, 327695, 1, 0, 393222, 11, 0, 393223, 12, 0, 393231, 1, 0, 458753, 7, 0, 458754, 8, 0, 458755, 9, 0, 458767, 1, 0, 524289, 2, 0, 524290, 1, 0, 524291, 2, 0, 524303, 1, 0 )
 
 [node name="PlayerSpawn" parent="." index="9"]
 position = Vector2( 939.122, 398.745 )
